@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { NgApexchartsModule } from "ng-apexcharts"; 
 
@@ -35,6 +36,8 @@ import { AutocompleteChipComponent } from './autocomplete-chip/autocomplete-chip
   ],
   imports: [
     NgApexchartsModule,
+    FormsModule,
+    HttpClientModule,
     MatIconModule,
     MatListModule,
     MatInputModule,
