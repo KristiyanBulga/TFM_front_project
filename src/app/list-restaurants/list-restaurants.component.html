@@ -1,46 +1,51 @@
 <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-  </mat-form-field>
+  <mat-label>Filtro</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Restaurante" #input>
+</mat-form-field>
 
-  <table mat-table
-       [dataSource]="dataSource" multiTemplateDataRows
-       class="mat-elevation-z8">
-  <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
-    <th mat-header-cell *matHeaderCellDef> {{headers[column]}} </th>
-    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+<table mat-table
+      [dataSource]="dataSource" multiTemplateDataRows
+      class="mat-elevation-z8">
+  <ng-container matColumnDef="restaurant_name">
+    <th mat-header-cell *matHeaderCellDef> {{headers["restaurant_name"]}} </th>
+    <td mat-cell *matCellDef="let element"> {{element["restaurant_name"]}} </td>
+  </ng-container>
+  <ng-container matColumnDef="score_overall">
+    <th mat-header-cell *matHeaderCellDef> {{headers["score_overall"]}} </th>
+    <td mat-cell *matCellDef="let element"> {{element["scores"]["average"]}} </td>
+  </ng-container>
+  <ng-container matColumnDef="symbol">
+    <th mat-header-cell *matHeaderCellDef> {{headers["symbol"]}} </th>
+    <td mat-cell *matCellDef="let element"> {{element["symbol"]["average"] > 0 ? "€".repeat(element["symbol"]["average"]): ''}} </td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> {{headers["actions"]}} </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-raised-button color="primary"[routerLink]="'/restaurants/' + element.place_id + '/' + element.restaurant_id">Ver</button>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="services">
+    <th mat-header-cell *matHeaderCellDef> {{headers["services"]}} </th>
+    <td mat-cell *matCellDef="let element"> 
+      <mat-chip-list>
+        <mat-chip
+          class="example-box"
+          *ngFor="let elem of element['services']">
+          <ng-template [ngIf]="services_array.includes(elem)" [ngIfElse]="textIt">
+              <mat-icon [fontIcon]="services[elem].icon" [matTooltip]="services[elem].tooltip"></mat-icon>
+          </ng-template>
+          <ng-template #textIt>
+              {{elem}}
+          </ng-template>
+        </mat-chip> 
+    </mat-chip-list>
+    </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  
-    <!-- Row shown when there is no matching data. -->
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-    </tr>
+  <!-- Row shown when there is no matching data. -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">No hay datos</td>
+  </tr>
 </table>
-<!--   
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-    <ng-container matColumnDef="restaurant">
-      <th mat-header-cell *matHeaderCellDef> Restaurant </th>
-      <td mat-cell *matCellDef="let element"> {{element.restaurant_name}} </td>
-    </ng-container>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-    </ng-container>
-    <ng-container matColumnDef="weight">
-      <th mat-header-cell *matHeaderCellDef> Weight </th>
-      <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-    </ng-container>
-    <ng-container matColumnDef="symbol">
-      <th mat-header-cell *matHeaderCellDef> Symbol </th>
-      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-    </ng-container>
   
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-    </tr>
-  </table> -->
