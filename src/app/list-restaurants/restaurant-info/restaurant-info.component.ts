@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import {HttpClient } from '@angular/common/http';
+import {ActivatedRoute} from '@angular/router'
 
 import {
   ChartComponent,
@@ -27,13 +29,18 @@ export type ChartOptions = {
   styleUrls: ['./restaurant-info.component.css']
 })
 export class RestaurantInfoComponent implements OnInit {
+  place_id: any = ""
+  restaurant_id: any = ""
+  trip_advisor_data: any = {
+    score_overall: "-"
+  }
+  google_maps_data: any = {}
+  restaurant_name = "Nombre del restaurante"
+
   @ViewChild("chart") chart!: ChartComponent ;
   public chartOptions: Partial<ChartOptions>;
-  displayedColumns = ['key', 'trip_advisor', 'google_maps', 'verema']
-  stats = [
-    {key: "Puntuación", "trip_advisor": 4.5, "google_maps": 4.6, "verema": 4.3},
-    {key: "Precio", "trip_advisor": '€€-€€€', "google_maps":"€€-€€€"},
-  ]
+  displayedColumns = ['key', 'trip_advisor', 'google_maps']
+  stats = [{}]
   table_keys = ["score", "price"]
   restaurant_tags = ['Americano', 'Pizza', 'Italiano', 'Hamburguesa', 'Parking']
   tags_selected: string[] = []
@@ -44,7 +51,8 @@ export class RestaurantInfoComponent implements OnInit {
     },
   }
   
-  constructor() {
+  constructor(private _route: ActivatedRoute, private http: HttpClient) {
+    
     this.chartOptions = {
       series: [
         {
@@ -95,10 +103,30 @@ export class RestaurantInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.place_id = this._route.snapshot.paramMap.get('place_id');
+    this.restaurant_id = this._route.snapshot.paramMap.get('restaurant_id');
+    const headers = {'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
+    const body = {"place_id":this.place_id, "restaurant_id":this.restaurant_id}
+    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/trip_advisor', body, { headers }).subscribe(data => {
+        this.trip_advisor_data = data
+        this.restaurant_name = data.name
+        this.fulfill_table()
+    })
+    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/google_maps', body, { headers }).subscribe(data => {
+        this.google_maps_data = data
+        this.fulfill_table()
+    })
   }
 
   received_elements(list_elements: string[]) {
     this.tags_selected = list_elements
    }
+
+  fulfill_table(): void {
+    this.stats = [    
+      {key: "Puntuación media", "trip_advisor": this.trip_advisor_data.score_overall, "google_maps": this.google_maps_data.score_overall},
+      {key: "Símbolos precio", "trip_advisor": this.trip_advisor_data.symbol, "google_maps": this.google_maps_data.symbol},
+    ]
+  }
 
 }

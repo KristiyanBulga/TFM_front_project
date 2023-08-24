@@ -50,13 +50,7 @@ export class ListRestaurantsComponent implements OnInit {
   ngOnInit(): void {
     const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
     this.http.get<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/combined', { headers }).subscribe(data => {
-        console.log(data)
-        data.map((obj: any) => {
-          obj["pills"] = obj.scores.average
-          return obj
-        })
         this.restaurants = data
-        console.log(this.restaurants)
         this.dataSource = new MatTableDataSource(this.restaurants);
     })
   }
