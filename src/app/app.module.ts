@@ -18,7 +18,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -50,7 +52,9 @@ import { AutocompleteChipComponent } from './autocomplete-chip/autocomplete-chip
     MatTooltipModule,
     MatGridListModule,
     MatFormFieldModule,
+    MatProgressBarModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
     AppRoutingModule,
     FlexLayoutModule,
     ReactiveFormsModule,
