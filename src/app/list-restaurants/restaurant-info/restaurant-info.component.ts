@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router'
 
@@ -36,8 +36,9 @@ export type ChartOptions = {
   styleUrls: ['./restaurant-info.component.css']
 })
 export class RestaurantInfoComponent implements OnInit {
-  place_id: any = ""
-  restaurant_id: any = ""
+  @Input() place_id: any = ""
+  @Input() restaurant_id: any = ""
+  @Input() comparisson: boolean = false
   main_stats = [{}]
   schedule_data = [{}]
   trip_advisor_loaded: boolean = false
@@ -59,7 +60,6 @@ export class RestaurantInfoComponent implements OnInit {
   public gm_score_chart_option: Partial<ChartOptions>;
   public ta_position_chart_option: Partial<ChartOptions>;
   public ta_all_scores_chart_option: Partial<ChartOptions>;
-
 
 
   displayedColumns = ['key', 'trip_advisor', 'google_maps']
@@ -135,8 +135,8 @@ export class RestaurantInfoComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.place_id = this._route.snapshot.paramMap.get('place_id');
-    this.restaurant_id = this._route.snapshot.paramMap.get('restaurant_id');
+    // this.place_id = this._route.snapshot.paramMap.get('place_id');
+    // this.restaurant_id = this._route.snapshot.paramMap.get('restaurant_id');
     const headers = {'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
     const body = {"place_id":this.place_id, "restaurant_id":this.restaurant_id}
     this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/trip_advisor', body, { headers }).subscribe(data => {
@@ -175,6 +175,10 @@ export class RestaurantInfoComponent implements OnInit {
       this.main_stats = [    
         {key: "Puntuación media", "trip_advisor": this.trip_advisor_data.score_overall, "google_maps": this.google_maps_data.score_overall},
         {key: "Símbolos precio", "trip_advisor": this.trip_advisor_data.symbol, "google_maps": this.google_maps_data.symbol},
+        {key: "Sirve desayuno", "trip_advisor": this.trip_advisor_data.serves_breakfast ? "Si": "No", "google_maps": "No disponible"},
+        {key: "Sirve almuerzo", "trip_advisor": this.trip_advisor_data.serves_brunch ? "Si": "No", "google_maps": "No disponible"},
+        {key: "Sirve comida", "trip_advisor": this.trip_advisor_data.serves_lunch ? "Si": "No", "google_maps": this.google_maps_data.serves_lunch ? "Si": "No"},
+        {key: "Sirve cena", "trip_advisor": this.trip_advisor_data.serves_dinner ? "Si": "No", "google_maps": this.google_maps_data.serves_dinner ? "Si": "No"},
       ]
       if ('schedule' in this.trip_advisor_data && 'lunes' in this.trip_advisor_data.schedule){
         this.ta_schedule = this.trip_advisor_data.schedule
