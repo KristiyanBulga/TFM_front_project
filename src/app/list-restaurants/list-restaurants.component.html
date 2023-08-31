@@ -52,10 +52,19 @@
   </tr>
 
 </table>
-<mat-card class="fixed" *ngIf="selected_restaurants.length > 0">
-  <mat-card-content>
-    <p><b>Restaurante seleccionado:</b> {{selected_restaurants.length > 0 ? selected_restaurants[0].name : "No se ha seleccionado un restaurante"}}  <i>* Seleccione otro restaurante para compararlo con este restaurante</i></p>
-    <button mat-raised-button color="warn" (click)="cancel_compare()">Cancelar</button>
-  </mat-card-content>
-</mat-card>
+<div class="fixed"  fxLayout="row" fxLayoutAlign="center center" *ngIf="selected_restaurants.length > 0">
+  <mat-card style="background: #f5f5f5;">
+    <mat-card-content>
+      <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="1%">
+        <div fxLayout="column" fxFlex fxLayoutAlign=" center">
+          <p><b>Restaurante seleccionado:</b> {{selected_restaurants.length > 0 ? selected_restaurants[0].name : "No se ha seleccionado un restaurante"}} </p>
+        </div>
+        <div fxLayout="column">
+          <button mat-raised-button color="warn" (click)="cancel_compare()">Cancelar</button>
+        </div>
+      </div>
+      <p><i>* Seleccione otro restaurante para compararlo con este restaurante</i></p>
+    </mat-card-content>
+  </mat-card>
+</div>
   

@@ -57,14 +57,7 @@ export class ListRestaurantsComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.restaurantService.getRestaurantsLength() == 0){
-      const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
-      this.http.get<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/combined', { headers }).subscribe(data => {
-          this.restaurants = data
-          this.dataSource = new MatTableDataSource(this.restaurants);
-          this.restaurantService.setRestaurantsData(data);
-          this.setSortingStrategy()
-          this.dataSource.sort = this.sort; 
-      })
+      this.restaurantService.obtainRestaurantsData()
     }
     else this.restaurantService.getRestaurantsData()
   }

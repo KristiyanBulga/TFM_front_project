@@ -11,8 +11,5 @@ table {
   position: -webkit-sticky;
   position: sticky;
   bottom: 20px;
-  right: 5%;
-  left: 5%;
-  background: white;
   z-index:1001;
 }

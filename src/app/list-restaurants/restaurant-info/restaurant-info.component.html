@@ -143,36 +143,40 @@
       <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row" fxFlex fxFlex.gt-lg="49%">
         <div fxLayout="column" fxFlex>
           <h3>Trip Advisor reviews</h3>
-          <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" *ngIf="last_reviews.trip_advisor_reviewslength > 0; else notripadvisor">
-            <mat-card *cdkVirtualFor="let item of last_reviews.trip_advisor_reviews" class="example-card">
-              <mat-card-subtitle>{{item.date}} Puntuación: {{item.rate}}</mat-card-subtitle>
-              <mat-card-title>{{item.title}}</mat-card-title>
-              <mat-card-content>
-                <p>{{item.review}}</p>
-              </mat-card-content>
-            </mat-card>
-          </cdk-virtual-scroll-viewport>
-          <ng-template #notripadvisor>
-            <b>No hay comentarios de google maps recientes</b>
-          </ng-template>
+          <mat-card>
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" *ngIf="last_reviews.trip_advisor_reviewslength > 0; else notripadvisor">
+              <mat-card *cdkVirtualFor="let item of last_reviews.trip_advisor_reviews" class="example-card">
+                <mat-card-subtitle>{{item.date}} Puntuación: {{item.rate}}</mat-card-subtitle>
+                <mat-card-title>{{item.title}}</mat-card-title>
+                <mat-card-content>
+                  <p>{{item.review}}</p>
+                </mat-card-content>
+              </mat-card>
+            </cdk-virtual-scroll-viewport>
+            <ng-template #notripadvisor>
+              <b>No hay comentarios de google maps recientes</b>
+            </ng-template>
+          </mat-card>
         </div>
       </div>
       <br>
       <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row" fxFlex fxFlex.gt-lg="49%">
         <div fxLayout="column" fxFlex>
           <h3>Google Maps reviews</h3>
-          <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" *ngIf="last_reviews.google_maps_reviews.length > 0; else nogooglemaps">
-            <mat-card *cdkVirtualFor="let item of last_reviews.google_maps_reviews" class="example-card">
-              <mat-card-subtitle>{{item.date}} Puntuación: {{item.rate}}</mat-card-subtitle>
-              <mat-card-title>Review</mat-card-title>
-              <mat-card-content>
-                <p>{{item.review}}</p>
-              </mat-card-content>
-            </mat-card>
-          </cdk-virtual-scroll-viewport>
-          <ng-template #nogooglemaps>
-            <b>No hay comentarios de google maps recientes</b>
-          </ng-template>
+          <mat-card>
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" *ngIf="last_reviews.google_maps_reviews.length > 0; else nogooglemaps">
+              <mat-card *cdkVirtualFor="let item of last_reviews.google_maps_reviews" class="example-card">
+                <mat-card-subtitle>{{item.date}} Puntuación: {{item.rate}}</mat-card-subtitle>
+                <mat-card-title>Review</mat-card-title>
+                <mat-card-content>
+                  <p>{{item.review}}</p>
+                </mat-card-content>
+              </mat-card>
+            </cdk-virtual-scroll-viewport>
+            <ng-template #nogooglemaps>
+              <b>No hay comentarios de google maps recientes</b>
+            </ng-template>
+          </mat-card>
         </div>
       </div>
       <br>

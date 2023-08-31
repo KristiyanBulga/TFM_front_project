@@ -64,7 +64,7 @@
  .example-viewport {
   height: 200px;
   width: 100%;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   border-radius: 10px;
 }
 

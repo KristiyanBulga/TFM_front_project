@@ -1,15 +1,18 @@
 <mat-toolbar color="primary" fxLayout="row">
     <div fxLayoyt="column">
-        <span>RestaurantScan</span>
+        <span style="cursor: pointer;" routerLink="">RestaurantScan</span>
     </div>
     <div fxLayout="column" fxFlex>
-        <div fxLayout="row" fxLayoutAlign="end center">
-          <button mat-button routerLink="/restaurants">
-            Restaurantes
+        <div fxLayout="row" fxLayoutAlign="end center" fxShow="true" fxLayoutGap="1%">
+          <button mat-button routerLink="/notifications">
+            <div matBadge="0" matBadgeColor="warn">
+              Notificaciones
+            </div>
           </button>
           <button mat-raised-button routerLink="/restaurants/test">
-            Desconectarse
+            <mat-icon fontIcon="logout"></mat-icon>
           </button>
         </div>
+
     </div>
 </mat-toolbar>

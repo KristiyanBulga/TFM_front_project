@@ -11,11 +11,14 @@ import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatSortModule} from '@angular/material/sort';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatBadgeModule} from '@angular/material/badge';
 import {MatInputModule} from '@angular/material/input';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -34,6 +37,9 @@ import { RestaurantInfoComponent } from './list-restaurants/restaurant-info/rest
 import { AutocompleteChipComponent } from './autocomplete-chip/autocomplete-chip.component';
 import { OneRestaurantComponent } from './list-restaurants/one-restaurant/one-restaurant.component';
 import { TwoRestaurantsComponent } from './list-restaurants/two-restaurants/two-restaurants.component';
+import { NotificationComponent } from './notifications/notifications.component';
+import { NotificationsListComponent } from './notifications/notifications-list/notifications-list.component';
+import { NotificationsConfigsComponent } from './notifications/notifications-configs/notifications-configs.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +49,10 @@ import { TwoRestaurantsComponent } from './list-restaurants/two-restaurants/two-
     RestaurantInfoComponent,
     AutocompleteChipComponent,
     OneRestaurantComponent,
-    TwoRestaurantsComponent
+    TwoRestaurantsComponent,
+    NotificationComponent,
+    NotificationsListComponent,
+    NotificationsConfigsComponent
   ],
   imports: [
     NgApexchartsModule,
@@ -53,11 +62,14 @@ import { TwoRestaurantsComponent } from './list-restaurants/two-restaurants/two-
     MatIconModule,
     MatListModule,
     MatSortModule,
+    MatTabsModule,
+    MatBadgeModule,
     MatInputModule,
     MatChipsModule,
     MatTableModule,
     MatButtonModule,
     MatDividerModule,
+    MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
     MatGridListModule,
