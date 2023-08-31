@@ -40,6 +40,7 @@ import { TwoRestaurantsComponent } from './list-restaurants/two-restaurants/two-
 import { NotificationComponent } from './notifications/notifications.component';
 import { NotificationsListComponent } from './notifications/notifications-list/notifications-list.component';
 import { NotificationsConfigsComponent } from './notifications/notifications-configs/notifications-configs.component';
+import { LoginComponent } from './user/login/login.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { NotificationsConfigsComponent } from './notifications/notifications-con
     TwoRestaurantsComponent,
     NotificationComponent,
     NotificationsListComponent,
-    NotificationsConfigsComponent
+    NotificationsConfigsComponent,
+    LoginComponent
   ],
   imports: [
     NgApexchartsModule,
