@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="center center" class="login-main">
+<div fxLayout="row" fxLayoutAlign="center center" class="login-main" *ngIf="!user_logged">
     <mat-card >
     <mat-card-header>
       <mat-card-title>Inicio de sesión</mat-card-title>
@@ -18,3 +18,4 @@
     </mat-card-actions>
     </mat-card>
 </div>
+<app-not-found *ngIf="user_logged"></app-not-found>

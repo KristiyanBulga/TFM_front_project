@@ -17,6 +17,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
+import {MatSelectModule} from '@angular/material/select';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -41,6 +42,7 @@ import { NotificationComponent } from './notifications/notifications.component';
 import { NotificationsListComponent } from './notifications/notifications-list/notifications-list.component';
 import { NotificationsConfigsComponent } from './notifications/notifications-configs/notifications-configs.component';
 import { LoginComponent } from './user/login/login.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { LoginComponent } from './user/login/login.component';
     NotificationComponent,
     NotificationsListComponent,
     NotificationsConfigsComponent,
-    LoginComponent
+    LoginComponent,
+    NotFoundComponent
   ],
   imports: [
     NgApexchartsModule,
@@ -70,6 +73,7 @@ import { LoginComponent } from './user/login/login.component';
     MatChipsModule,
     MatTableModule,
     MatButtonModule,
+    MatSelectModule,
     MatDividerModule,
     MatSidenavModule,
     MatToolbarModule,

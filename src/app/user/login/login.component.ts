@@ -13,8 +13,15 @@ export class LoginComponent implements OnInit {
   password: string = ""
   loading: boolean = false
   wrong: boolean = false
+  user: any = {}
+  user_logged: boolean = false
 
-  constructor(private userService: UsersService, private _router: Router) { }
+  constructor(private userService: UsersService, private _router: Router) {
+    this.userService.user_info$.subscribe(data => {
+      this.user = data
+      this.user_logged = Object.keys(this.user).length !== 0
+    })
+  }
 
   ngOnInit(): void {
   }

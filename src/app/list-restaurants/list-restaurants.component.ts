@@ -1,9 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {HttpClient } from '@angular/common/http';
-import { Observable, Subject, map } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
 import { RestaurantList } from './restaurants.service';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
@@ -46,7 +42,7 @@ export class ListRestaurantsComponent implements OnInit {
   selected_restaurants: any = []
 
 
-  constructor(private http: HttpClient, private restaurantService: RestaurantList, private _router: Router) {
+  constructor(private restaurantService: RestaurantList, private _router: Router) {
     this.restaurantService.all_restaurants$.subscribe(data => {
         this.restaurants = data
         this.dataSource = new MatTableDataSource(this.restaurants);

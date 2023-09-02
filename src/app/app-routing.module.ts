@@ -11,6 +11,7 @@ const appRoutes: Routes = [
     { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
     { path: 'restaurants', component: ListRestaurantsComponent},
     { path: 'notifications', component: NotificationComponent},
+    { path: 'notifications/configurations', component: NotificationComponent},
     { path: 'restaurants/:place_id/:restaurant_id', component: OneRestaurantComponent},
     { path: 'restaurants/:place_id/:restaurant_id/:place_id2/:restaurant_id2', component: TwoRestaurantsComponent},
     { path: 'login', component: LoginComponent}

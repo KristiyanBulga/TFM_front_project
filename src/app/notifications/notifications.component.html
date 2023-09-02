@@ -1,4 +1,5 @@
-<mat-tab-group mat-align-tabs="start">
+<mat-tab-group mat-align-tabs="start" [selectedIndex]="selectedIndex" *ngIf="user_logged">
   <mat-tab label="Notificaciones"><app-notifications-list></app-notifications-list></mat-tab>
-  <mat-tab label="Configuraciones"><app-notifications-configs></app-notifications-configs></mat-tab>
+  <mat-tab label="Configuraciones" *ngIf="user_logged && user.username != 'admin@gmail.com'"><app-notifications-configs></app-notifications-configs></mat-tab>
 </mat-tab-group>
+<app-not-found *ngIf="!user_logged"></app-not-found>
