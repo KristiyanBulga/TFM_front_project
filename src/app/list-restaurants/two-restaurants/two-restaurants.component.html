@@ -1,9 +1,9 @@
 <div fxLayout="row" fxLayoutGap="2%">
     <div fxLayout="column" fxFlex>
-        <app-restaurant-info [place_id]="place_id" [restaurant_id]="restaurant_id" [comparisson]="true"></app-restaurant-info>
+        <app-restaurant-info [place_id]="place_id" [restaurant_id]="restaurant_id" [comparisson]="true" (setMax)="setMaxValues()"></app-restaurant-info>
     </div>
     <mat-divider vertical></mat-divider>
     <div fxLayout="column" fxFlex>
-        <app-restaurant-info [place_id]="place_id2" [restaurant_id]="restaurant_id2" [comparisson]="true"></app-restaurant-info>
+        <app-restaurant-info [place_id]="place_id2" [restaurant_id]="restaurant_id2" [comparisson]="true" (setMax)="setMaxValues()"></app-restaurant-info>
     </div>
 </div>

@@ -5,7 +5,12 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService {
-  private users: any = [{ username: "admin@gmail.es", password: "Admin" }, { username: "propietario@gmail.es", password: "Propietario", restaurants: ["d4782515", "d985909"] }];
+  private users: any = [
+    { username: "admin@gmail.es", password: "Admin" }, 
+    { username: "propietario@gmail.es", password: "Propietario", restaurants: [
+      {restaurant_id: "d985914", name:"Restaurante Nuestro Bar"}, 
+      {restaurant_id:"d985909", name:"Restaurante Asador Concepción"}]}
+  ];
   private current_user: any = {}
   private user_subject$ = new BehaviorSubject<any>({});
   user_info$ = this.user_subject$.asObservable();

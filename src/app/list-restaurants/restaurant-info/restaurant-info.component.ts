@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router'
 
@@ -39,6 +39,7 @@ export class RestaurantInfoComponent implements OnInit {
   @Input() place_id: any = ""
   @Input() restaurant_id: any = ""
   @Input() comparisson: boolean = false
+  @Output() setMax: EventEmitter<any> = new EventEmitter();
   main_stats = [{}]
   schedule_data = [{}]
   trip_advisor_loaded: boolean = false
@@ -63,12 +64,14 @@ export class RestaurantInfoComponent implements OnInit {
 
 
   displayedColumns = ['key', 'trip_advisor', 'google_maps']
-  table_keys = ["score", "price"]
-  restaurant_tags = ['Americano', 'Pizza', 'Italiano', 'Hamburguesa', 'Parking']
-  tags_selected: string[] = []
+  // table_keys = ["score", "price"]
+  // restaurant_tags = ['Americano', 'Pizza', 'Italiano', 'Hamburguesa', 'Parking']
+  // tags_selected: string[] = []
   
+  aux_max_reviews: any = 0
+  aux_max_position: any = 0
 
-  constructor(private _route: ActivatedRoute, private http: HttpClient) {
+  constructor(private http: HttpClient) {
     this.base_config = {
       series: [],
       chart: {
@@ -83,37 +86,7 @@ export class RestaurantInfoComponent implements OnInit {
       xaxis: {categories: [],title: {text: "Semana del año"}},
     };
     this.ta_score_chart_option = JSON.parse(JSON.stringify(this.base_config));
-    this.ta_score_chart_option.yaxis = [
-      {
-        opposite: true,
-        title: {text: "Núm comentarios"},
-        min:0,
-        labels: {formatter: function(val) {return val.toFixed(1);}}
-      },
-      {
-        title: {text: "Puntuación"},
-        min:0,
-        max:5,
-        tickAmount: 5,
-        labels: {formatter: function(val) {return val.toFixed(2);}}
-      }
-    ]
     this.gm_score_chart_option = JSON.parse(JSON.stringify(this.base_config));
-    this.gm_score_chart_option.yaxis = [
-      {
-        opposite: true,
-        title: {text: "Núm comentarios"},
-        min:0,
-        labels: {formatter: function(val) {return val.toFixed(1);}}
-      },
-      {
-        title: {text: "Puntuación"},
-        min:0,
-        max:5,
-        tickAmount: 5,
-        labels: {formatter: function(val) {return val.toFixed(2);}}
-      }
-    ]
     this.ta_position_chart_option = JSON.parse(JSON.stringify(this.base_config));
     this.ta_position_chart_option.yaxis = [
       {
@@ -144,19 +117,18 @@ export class RestaurantInfoComponent implements OnInit {
         this.restaurant_name = data.name
         this.trip_advisor_loaded = true
         this.fulfill_table()
-        this.trip_advisor_graphs()
+        this.populate_graphs()
     })
     this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/google_maps', body, { headers }).subscribe(data => {
         this.google_maps_data = data
         this.google_maps_loaded = true
         this.fulfill_table()
-        this.google_maps_graphs()
+        this.populate_graphs()
     })
     this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/reviews/historical', body, { headers }).subscribe(data => {
         this.reviews_historical = data
         this.reviews_historical_loaded = true
-        this.trip_advisor_graphs()
-        this.google_maps_graphs()
+        this.populate_graphs()
     })
     this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/reviews/last', body, { headers }).subscribe(data => {
         this.last_reviews = data
@@ -165,16 +137,16 @@ export class RestaurantInfoComponent implements OnInit {
   }
 
 
-  received_elements(list_elements: string[]) {
-    this.tags_selected = list_elements
-   }
+  // received_elements(list_elements: string[]) {
+  //   this.tags_selected = list_elements
+  //  }
 
 
   fulfill_table(): void {
     if (this.trip_advisor_loaded && this.google_maps_loaded){
       this.main_stats = [    
         {key: "Puntuación media", "trip_advisor": this.trip_advisor_data.score_overall, "google_maps": this.google_maps_data.score_overall},
-        {key: "Símbolos precio", "trip_advisor": this.trip_advisor_data.symbol, "google_maps": this.google_maps_data.symbol},
+        {key: "Precio", "trip_advisor": this.trip_advisor_data.symbol, "google_maps": this.google_maps_data.symbol},
         {key: "Sirve desayuno", "trip_advisor": this.trip_advisor_data.serves_breakfast ? "Si": "No", "google_maps": "No disponible"},
         {key: "Sirve almuerzo", "trip_advisor": this.trip_advisor_data.serves_brunch ? "Si": "No", "google_maps": "No disponible"},
         {key: "Sirve comida", "trip_advisor": this.trip_advisor_data.serves_lunch ? "Si": "No", "google_maps": this.google_maps_data.serves_lunch ? "Si": "No"},
@@ -199,8 +171,9 @@ export class RestaurantInfoComponent implements OnInit {
   }
 
 
-  trip_advisor_graphs(): void {
-    if (this.trip_advisor_loaded && this.reviews_historical_loaded){
+  populate_graphs(): void {
+    if (this.trip_advisor_loaded && this.reviews_historical_loaded && this.google_maps_loaded && this.reviews_historical_loaded){
+      this.aux_max_reviews = Math.max(Math.max(...this.reviews_historical.trip_advisor.counts), Math.max(...this.reviews_historical.google_maps.counts))
       let historical_data = this.trip_advisor_data.historical
       let count_data = historical_data.week.length
       this.ta_all_scores_chart_option.series = [
@@ -218,6 +191,10 @@ export class RestaurantInfoComponent implements OnInit {
         {name: "Puntuación media", type: "line", data: Array(count_data-historical_data.score_overall.length).fill(null).concat(historical_data.score_overall)},
         {name: "Puntuación semanal (comentarios)", type: "line", data: Array(count_data-this.reviews_historical.trip_advisor.means.length).fill(null).concat(this.reviews_historical.trip_advisor.means)}
       ]
+      this.ta_score_chart_option.yaxis = [
+        {opposite: true, title: {text: "Núm comentarios"}, min:0, max:this.aux_max_reviews, tickAmount:this.aux_max_reviews, labels: {formatter: function(val) {return val.toFixed(1);}}},
+        {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}}
+      ]
       this.ta_score_chart_option.title = {text: "Tendencia puntuación trip advisor",align: "left"}
       this.ta_score_chart_option.xaxis = {categories: historical_data.week,title: {text: "Semana del año"},}
 
@@ -226,22 +203,43 @@ export class RestaurantInfoComponent implements OnInit {
       ]
       this.ta_position_chart_option.title = {text: "Ranking en trip advisor", align: "left"}
       this.ta_position_chart_option.xaxis = {categories: historical_data.week, title: {text: "Semana del año"},}
+
+      let historical_data_gm = this.google_maps_data.historical
+      let count_data_gm = historical_data_gm.week.length
+      this.gm_score_chart_option.series = [
+        {name: "Núm comentarios", type: "column", data: Array(count_data_gm-this.reviews_historical.google_maps.counts.length).fill(null).concat(this.reviews_historical.google_maps.counts)},
+        {name: "Puntuación media", type: "line", data: Array(count_data_gm-historical_data_gm.score_overall.length).fill(null).concat(historical_data_gm.score_overall)},
+        {name: "Puntuación semanal (comentarios)", type: "line", data: Array(count_data_gm-this.reviews_historical.google_maps.means.length).fill(null).concat(this.reviews_historical.google_maps.means)}
+      ]
+      this.gm_score_chart_option.yaxis = [
+        {opposite: true, title: {text: "Núm comentarios"}, min:0, max:this.aux_max_reviews, tickAmount:this.aux_max_reviews, labels: {formatter: function(val) {return val.toFixed(1);}}},
+        {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}}
+      ]
+      this.gm_score_chart_option.title = {text: "Tendencia puntuación google maps",align: "left"}
+      this.gm_score_chart_option.xaxis = {categories: historical_data_gm.week, title: {text: "Semana del año"},}
+
+      this.aux_max_position = Math.max(...historical_data.ranking)
+      this.setMax.emit()
     }
   }
 
 
-  google_maps_graphs(): void {
-    if (this.google_maps_loaded && this.reviews_historical_loaded){
-      let historical_data = this.google_maps_data.historical
-      let count_data = historical_data.week.length
-      this.gm_score_chart_option.series = [
-        {name: "Núm comentarios", type: "column", data: Array(count_data-this.reviews_historical.google_maps.counts.length).fill(null).concat(this.reviews_historical.google_maps.counts)},
-        {name: "Puntuación media", type: "line", data: Array(count_data-historical_data.score_overall.length).fill(null).concat(historical_data.score_overall)},
-        {name: "Puntuación semanal (comentarios)", type: "line", data: Array(count_data-this.reviews_historical.google_maps.means.length).fill(null).concat(this.reviews_historical.google_maps.means)}
-      ]
-      this.gm_score_chart_option.title = {text: "Tendencia puntuación google maps",align: "left"}
-      this.gm_score_chart_option.xaxis = {categories: historical_data.week, title: {text: "Semana del año"},}
-    }
+  update_graphs(aux_max_reviews:any, aux_max_position:any){
+    this.ta_score_chart_option.yaxis = [
+      {opposite: true, title: {text: "Núm comentarios"}, min:0, max:aux_max_reviews, tickAmount:aux_max_reviews, labels: {formatter: function(val) {return val.toFixed(1);}}},
+      {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}}
+    ]
+    this.gm_score_chart_option.yaxis = [
+      {opposite: true, title: {text: "Núm comentarios"}, min:0, max:aux_max_reviews, tickAmount:aux_max_reviews, labels: {formatter: function(val) {return val.toFixed(1);}}},
+      {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}}
+    ]
+    this.ta_position_chart_option.yaxis = [
+      {title: {text: "Posición"}, min:0, max:aux_max_position, labels: {formatter: function(val) {return val.toFixed(1);}}}
+    ]
+  }
+
+  get_max_values(){
+    return {aux_max_reviews:this.aux_max_reviews, aux_max_position:this.aux_max_position}
   }
 
 }
