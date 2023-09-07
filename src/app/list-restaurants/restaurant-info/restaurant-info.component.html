@@ -1,0 +1,214 @@
+<ng-template [ngIf]="!trip_advisor_loaded || !google_maps_loaded" [ngIfElse]="loaded_info">
+  <br><br><br>
+    <div fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
+      <svg>
+        <g>
+          <path d="M 50,100 A 1,1 0 0 1 50,0"/>
+        </g>
+        <g>
+          <path d="M 50,75 A 1,1 0 0 0 50,-25"/>
+        </g>
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#3f51b5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#33FFC4;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+</ng-template>
+<ng-template #loaded_info>
+  <div fxLayout="column" >
+      <div fxLayout="row" fxLayoutAlign="space-around" >
+          <h1>{{restaurant_name}}</h1>
+      </div>
+  </div>
+  <h2>Información del restaurante</h2>
+  <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="6%">
+      <table mat-table [dataSource]="main_stats" class="mat-elevation-z2" fxFlex.gt-sm>
+          <ng-container matColumnDef="key">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element"> {{element.key}} </td>
+          </ng-container>
+          <ng-container matColumnDef="trip_advisor">
+            <th mat-header-cell *matHeaderCellDef> Trip Advisor </th>
+            <td mat-cell *matCellDef="let element"> {{element.trip_advisor}} </td>
+          </ng-container>
+          <ng-container matColumnDef="google_maps">
+            <th mat-header-cell *matHeaderCellDef> Google Maps </th>
+            <td mat-cell *matCellDef="let element"> {{element.google_maps}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+  </div>
+  <br>
+  <div fxLayout="row" fxLayoutAlign="space-around center" >
+    <img src="./../../../assets/travellers-choice.jpg" style="width: 90px;">
+    <div>Página de Trip Advisor <b>{{trip_advisor_data.claimed ? "no ": ""}}</b> reclamada por el propietario</div>
+  </div>
+  <br>
+  <h3>Horario</h3>
+  <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="6%">
+      <table mat-table [dataSource]="schedule_data" class="mat-elevation-z2" fxFlex.gt-sm>
+          <ng-container matColumnDef="key">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element"> {{element.key}} </td>
+          </ng-container>
+          <ng-container matColumnDef="trip_advisor">
+            <th mat-header-cell *matHeaderCellDef> Trip Advisor </th>
+            <td mat-cell *matCellDef="let element"> {{element.trip_advisor}} </td>
+          </ng-container>
+          <ng-container matColumnDef="google_maps">
+            <th mat-header-cell *matHeaderCellDef> Google Maps </th>
+            <td mat-cell *matCellDef="let element"> {{element.google_maps}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+  </div>
+  <br>
+  <ng-template [ngIf]="!reviews_historical_loaded" [ngIfElse]="loaded_historical">
+    <div fxLayout="column" >
+      <div fxLayout="row" fxLayoutAlign="space-around" >
+          <h1>Cargando datos históricos ...</h1>
+      </div>
+  </div>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </ng-template>
+  <ng-template #loaded_historical>
+    <br>
+    <h3>Datos históricos</h3>
+    <div [fxLayout]="comparisson ? 'column' : 'row'" fxLayout.lt-lg="column" fxLayoutGap="2%">
+      <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row"  fxFlex fxFlex.gt-lg="49%">
+        <apx-chart
+          [series]="ta_position_chart_option.series!"
+          [chart]="ta_position_chart_option.chart!"
+          [xaxis]="ta_position_chart_option.xaxis!"
+          [yaxis]="ta_position_chart_option.yaxis!"
+          [dataLabels]="ta_position_chart_option.dataLabels!"
+          [grid]="ta_position_chart_option.grid!"
+          [stroke]="ta_position_chart_option.stroke!"
+          [title]="ta_position_chart_option.title!"
+        fxFill></apx-chart>
+      </div>
+      <br>
+      <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row"  fxFlex fxFlex.gt-lg="49%">
+        <apx-chart
+          [series]="ta_all_scores_chart_option.series!"
+          [chart]="ta_all_scores_chart_option.chart!"
+          [xaxis]="ta_all_scores_chart_option.xaxis!"
+          [yaxis]="ta_all_scores_chart_option.yaxis!"
+          [dataLabels]="ta_all_scores_chart_option.dataLabels!"
+          [grid]="ta_all_scores_chart_option.grid!"
+          [stroke]="ta_all_scores_chart_option.stroke!"
+          [title]="ta_all_scores_chart_option.title!"
+        fxFill></apx-chart>
+      </div>
+      <br>
+    </div>
+    <br>
+    <div [fxLayout]="comparisson ? 'column' : 'row'" fxLayout.lt-lg="column" fxLayoutGap="2%">
+      <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row" fxFlex fxFlex.gt-lg="49%">
+        <apx-chart
+          [series]="ta_score_chart_option.series!"
+          [chart]="ta_score_chart_option.chart!"
+          [xaxis]="ta_score_chart_option.xaxis!"
+          [yaxis]="ta_score_chart_option.yaxis!"
+          [dataLabels]="ta_score_chart_option.dataLabels!"
+          [grid]="ta_score_chart_option.grid!"
+          [stroke]="ta_score_chart_option.stroke!"
+          [title]="ta_score_chart_option.title!"
+          fxFill></apx-chart>
+        </div>
+        <br>
+      <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row" fxFlex fxFlex.gt-lg="49%">
+        <apx-chart
+          [series]="gm_score_chart_option.series!"
+          [chart]="gm_score_chart_option.chart!"
+          [xaxis]="gm_score_chart_option.xaxis!"
+          [yaxis]="gm_score_chart_option.yaxis!"
+          [dataLabels]="gm_score_chart_option.dataLabels!"
+          [grid]="gm_score_chart_option.grid!"
+          [stroke]="gm_score_chart_option.stroke!"
+          [title]="gm_score_chart_option.title!"
+          fxFill></apx-chart>
+        </div>
+        <br>
+    </div>
+    <br>
+    <h2>Últimas reviews</h2>
+    <div [fxLayout]="comparisson ? 'column' : 'row'" fxLayout.lt-lg="column" fxLayoutGap="2%">
+      <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row" fxFlex fxFlex.gt-lg="49%">
+        <div fxLayout="column" fxFlex>
+          <h3>Trip Advisor reviews</h3>
+          <mat-card>
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" *ngIf="last_reviews.trip_advisor_reviewslength > 0; else notripadvisor">
+              <mat-card *cdkVirtualFor="let item of last_reviews.trip_advisor_reviews" class="example-card">
+                <mat-card-subtitle>{{item.date}} Puntuación: {{item.rate}}</mat-card-subtitle>
+                <mat-card-title>{{item.title}}</mat-card-title>
+                <mat-card-content>
+                  <p>{{item.review}}</p>
+                </mat-card-content>
+              </mat-card>
+            </cdk-virtual-scroll-viewport>
+            <ng-template #notripadvisor>
+              <b>No hay comentarios de trip advisor en la última semana</b>
+            </ng-template>
+          </mat-card>
+        </div>
+      </div>
+      <br>
+      <div [fxLayout]="comparisson ? 'row' : 'column'" fxLayout.lt-lg="row" fxFlex fxFlex.gt-lg="49%">
+        <div fxLayout="column" fxFlex>
+          <h3>Google Maps reviews</h3>
+          <mat-card>
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport" *ngIf="last_reviews.google_maps_reviews.length > 0; else nogooglemaps">
+              <mat-card *cdkVirtualFor="let item of last_reviews.google_maps_reviews" class="example-card">
+                <mat-card-subtitle>{{item.date}} Puntuación: {{item.rate}}</mat-card-subtitle>
+                <mat-card-title>Review</mat-card-title>
+                <mat-card-content>
+                  <p>{{item.review}}</p>
+                </mat-card-content>
+              </mat-card>
+            </cdk-virtual-scroll-viewport>
+            <ng-template #nogooglemaps>
+              <b>No hay comentarios de google maps en la última semana</b>
+            </ng-template>
+          </mat-card>
+        </div>
+      </div>
+      <br>
+    </div>
+    <br>
+    <h3>Todos los tags de trip advisor</h3>
+    <mat-chip-list>
+      <mat-chip *ngFor="let item of trip_advisor_data.tags">{{item}}</mat-chip>
+    </mat-chip-list>
+  </ng-template>
+</ng-template>
+<br>
+<!-- <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="3%" fxLayoutAlign.gt-sm="start center">
+  <div fxLayout="column" fxFlex.gt-sm="47%">
+    <b>Localización</b>
+    <img src="https://3.bp.blogspot.com/-s83LtgmCdjg/UuP6aj4C9fI/AAAAAAAAAjw/LmfN0y1zERU/s1600/marker-01.png" alt="restaurant image">
+  </div>
+</div>
+<br>
+<mat-divider></mat-divider>
+<div fxLayout="row" fxLayoutGap="3%" fxLayoutAlign="center center">
+  <h2>Otros restaurantes</h2>
+</div>
+<div fxLayout="row" fxLayoutGap="3%" fxLayoutAlign="start start">
+  <div fxLayout="column" fxFlex>
+    <app-autocomplete-chip [all_elements]="restaurant_tags" (selected_elements)="received_elements($event)"></app-autocomplete-chip>
+  </div>
+</div>
+<div *ngIf="tags_selected.length === 0">
+  <h3>Selecciona un tag por favor</h3>
+</div>
+<div *ngIf="tags_selected.length !== 0">
+  <h3>{{ tags_selected }}</h3>
+</div> -->
+<br>

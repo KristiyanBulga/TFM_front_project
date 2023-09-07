@@ -1,0 +1,21 @@
+<mat-toolbar color="primary" fxLayout="row">
+    <div fxLayoyt="column">
+        <span style="cursor: pointer;" routerLink="">RestaurantScan</span>
+    </div>
+    <div fxLayout="column" fxFlex>
+        <div fxLayout="row" fxLayoutAlign="end center" fxShow="true" fxLayoutGap="1%">
+          <button mat-button routerLink="/notifications" *ngIf="user_logged">
+            <div matBadge="0" matBadgeColor="warn">
+              Notificaciones
+            </div>
+          </button>
+          <button mat-raised-button (click)="logout()" *ngIf="user_logged">
+            <mat-icon fontIcon="logout"></mat-icon>
+          </button>
+          <button mat-raised-button routerLink="/login" *ngIf="!user_logged">
+            Login
+          </button>
+        </div>
+
+    </div>
+</mat-toolbar>

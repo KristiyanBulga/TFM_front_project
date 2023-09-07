@@ -1,0 +1,21 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="login-main" *ngIf="!user_logged">
+    <mat-card >
+    <mat-card-header>
+      <mat-card-title>Inicio de sesión</mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayout="column">
+      <mat-form-field>
+        <input matInput placeholder="Nombre de usuario" [(ngModel)]="username">
+      </mat-form-field>
+      <mat-form-field>
+        <input type="password" matInput placeholder="Contraseña" [(ngModel)]="password">
+      </mat-form-field>
+      <p style="color: red;" *ngIf="wrong">* Nombre de usuario o contraseña incorrectos</p>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <mat-progress-spinner *ngIf="loading"></mat-progress-spinner>
+      <button mat-raised-button color="primary" (click)="onSubmit()">Login</button>
+    </mat-card-actions>
+    </mat-card>
+</div>
+<app-not-found *ngIf="user_logged"></app-not-found>
