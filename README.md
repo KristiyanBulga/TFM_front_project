@@ -1,27 +1,21 @@
-# TFMFrontProject
+# RestaurantScan Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.11.
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/KristiyanBulga/TFM_front_project/blob/main/README-EN.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/KristiyanBulga/TFM_front_project/blob/main/README.md)
 
-## Development server
+Proyecto final de máster sobre el desarrollo de una herramienta para evaluar la presencia en la red de un comercio 
+frente a sus competidores. El objetivo de este proyecto es crear un proceso de extracción y homogeneización de datos
+que pueda ser llevado a cualquier tipo de negocios. El desarrollo de este proyecto se ha centrado en los restaurantes.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Repositorio *TFM_front_project*
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+En este repositorio se ha desarrollado una aplicación web usando Angular. El objetivo de esta aplicación web es ser la
+herramienta para evaluar la presencia en la red de un comercio frente a sus competidores. Para ello, se ha hecho uso
+de la API generada en el proyecto del backend que podemos encotrar en el repositorio [*TFM_project*](https://github.com/KristiyanBulga/TFM_project)
 
-## Build
+La palicación ha sido compilada con `ng build --prod` para convertirla en una web estática y ser súbida en un contenedor de S3 que sirve como alojamiento web. Si se quiere probar la aplicación en local, se puede hacer con `ng serve -o`.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+A continuación se muestra una demo de la aplicación web.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+![](https://github.com/KristiyanBulga/TFM_front_project/blob/main/src/assets/demo.gif)
