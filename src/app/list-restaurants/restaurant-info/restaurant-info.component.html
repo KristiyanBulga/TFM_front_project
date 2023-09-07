@@ -46,7 +46,7 @@
   <br>
   <div fxLayout="row" fxLayoutAlign="space-around center" >
     <img src="./../../../assets/travellers-choice.jpg" style="width: 90px;">
-    <div>Página de Trip Advisor <b>{{trip_advisor_data.claimed ? "no ": ""}}</b> reclamada</div>
+    <div>Página de Trip Advisor <b>{{trip_advisor_data.claimed ? "no ": ""}}</b> reclamada por el propietario</div>
   </div>
   <br>
   <h3>Horario</h3>
@@ -154,7 +154,7 @@
               </mat-card>
             </cdk-virtual-scroll-viewport>
             <ng-template #notripadvisor>
-              <b>No hay comentarios de google maps recientes</b>
+              <b>No hay comentarios de trip advisor en la última semana</b>
             </ng-template>
           </mat-card>
         </div>
@@ -174,7 +174,7 @@
               </mat-card>
             </cdk-virtual-scroll-viewport>
             <ng-template #nogooglemaps>
-              <b>No hay comentarios de google maps recientes</b>
+              <b>No hay comentarios de google maps en la última semana</b>
             </ng-template>
           </mat-card>
         </div>

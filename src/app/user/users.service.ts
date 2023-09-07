@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class UsersService {
   private users: any = [
-    { username: "admin@gmail.com", password: "Admin" }, 
+    { username: "admin@gmail.com", password: "Admin", restaurants:[]}, 
     { username: "propietario@gmail.com", password: "Propietario", restaurants: [
       {restaurant_id: "d985914", name:"Restaurante Nuestro Bar"}, 
       {restaurant_id:"d985909", name:"Restaurante Asador Concepción"}]}

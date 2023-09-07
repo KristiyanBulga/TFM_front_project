@@ -9,7 +9,7 @@ import { NotificationService } from '../notification.service';
   styleUrls: ['./notifications-list.component.css']
 })
 export class NotificationsListComponent implements OnInit {
-  displayedColumns: string[] = ['date', 'message', 'restaurant'];
+  displayedColumns: string[] = ['date', 'restaurant', 'message'];
   notifications: any = [];
   dataSource = new MatTableDataSource(this.notifications);
   @ViewChild(MatSort, {static:true}) sort!: MatSort;

@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { RestaurantList } from './restaurants.service';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
+import { UsersService } from '../user/users.service';
 
 export interface PeriodicElement {
   name: string;
@@ -17,6 +18,8 @@ export interface PeriodicElement {
   styleUrls: ['./list-restaurants.component.css']
 })
 export class ListRestaurantsComponent implements OnInit {
+  user: any = {}
+  user_logged: boolean = false
   displayedColumns: string[] = ['restaurant_name', 'score_overall', 'symbol', 'services', 'actions'];
   headers: any = {'restaurant_name': 'Restaurante', 'score_overall': 'Puntuación media', 'symbol': 'Símbolo', 'services': 'Servicios', 'actions': 'Actions'}
   dataToDisplay: any = []
@@ -42,7 +45,12 @@ export class ListRestaurantsComponent implements OnInit {
   selected_restaurants: any = []
 
 
-  constructor(private restaurantService: RestaurantList, private _router: Router) {
+
+  constructor(private restaurantService: RestaurantList, private _router: Router, private userService: UsersService) {
+    this.userService.user_info$.subscribe(data => {
+      this.user = data
+      this.user_logged = Object.keys(this.user).length !== 0
+    })
     this.restaurantService.all_restaurants$.subscribe(data => {
         this.restaurants = data
         this.dataSource = new MatTableDataSource(this.restaurants);
@@ -93,6 +101,11 @@ export class ListRestaurantsComponent implements OnInit {
 
   cancel_compare(){
     this.selected_restaurants = []
+  }
+
+  is_user_restaurant(restaurant_name:any){
+    if (this.user_logged && this.user.restaurants.filter((rest: any) => rest.name == restaurant_name).length > 0) return true
+    return false
   }
 
 }

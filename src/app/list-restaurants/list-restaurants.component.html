@@ -8,7 +8,7 @@
       class="mat-elevation-z8" matSort>
   <ng-container matColumnDef="restaurant_name">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{headers["restaurant_name"]}} </th>
-    <td mat-cell *matCellDef="let element"> {{element["restaurant_name"]}} </td>
+    <td mat-cell *matCellDef="let element"> {{element["restaurant_name"]}} <mat-icon fontIcon="star" matTooltip="Propietario de este restaurante" *ngIf="is_user_restaurant(element['restaurant_name'])"></mat-icon></td>
   </ng-container>
   <ng-container matColumnDef="score_overall">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{headers["score_overall"]}} </th>
