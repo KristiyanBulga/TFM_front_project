@@ -19,3 +19,13 @@ La palicación ha sido compilada con `ng build --prod` para convertirla en una w
 A continuación se muestra una demo de la aplicación web.
 
 ![](https://github.com/KristiyanBulga/TFM_front_project/blob/main/src/assets/demo.gif)
+
+## Usuarios de prueba
+
+Propietario de un restaurante:
+ * Nombre de usuario: propietario@gmail.com
+ * Contraseña: Propietario
+
+Administrador:
+* Nombre de usuario: admin@gmail.com
+* Contraseña: Admin
