@@ -13,3 +13,61 @@ table {
   bottom: 20px;
   z-index:1001;
 }
+
+.map-container {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 5px;
+  border: 2px solid var(--terciary);
+}
+
+#map{
+  height: 50vh;
+  z-index: 10;
+}
+
+.list_restaurants {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+/* Stars */
+.star-rating {
+  display: inline-block;
+  font-size: 20px; /* size of stars */
+  font-family: Arial, sans-serif;
+  line-height: 1;
+}
+
+.stars-outer {
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  width:100px; /* width for 5 stars */
+}
+
+.stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+}
+
+.stars-outer::before,
+.stars-inner::before {
+  content: '★★★★★'; /* 5 stars */
+  font-size: 24px;   /* same as the container */
+}
+
+.stars-outer::before {
+  color: #e3e3e3; /* color of empty stars */
+}
+
+.stars-inner::before {
+  color: #ffc107; /* color of filled stars */
+}

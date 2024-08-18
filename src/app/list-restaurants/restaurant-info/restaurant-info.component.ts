@@ -1,5 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {HttpClient } from '@angular/common/http';
+import * as Highcharts from 'highcharts';
+const More = require('highcharts/highcharts-more');
+More(Highcharts);
+import Histogram from 'highcharts/modules/histogram-bellcurve';
+Histogram(Highcharts);
+const Exporting = require('highcharts/modules/exporting');
+Exporting(Highcharts);
+const ExportData = require('highcharts/modules/export-data');
+ExportData(Highcharts);
+const Accessibility = require('highcharts/modules/accessibility');
+Accessibility(Highcharts);
+const Wordcloud = require('highcharts/modules/wordcloud');
+Wordcloud(Highcharts);
+
 
 import {
   ApexAxisChartSeries,
@@ -53,12 +67,18 @@ export class RestaurantInfoComponent implements OnInit {
   last_reviews: any = {}
   reviews_historical: any = {}
   reviews_historical_loaded: boolean = false
+  reviews_stats: any = {}
+  reviews_stats_loaded: boolean = false
+
+  max_words=30
 
   public base_config: Partial<ChartOptions>;
   public ta_score_chart_option: Partial<ChartOptions>;
   public gm_score_chart_option: Partial<ChartOptions>;
   public ta_position_chart_option: Partial<ChartOptions>;
   public ta_all_scores_chart_option: Partial<ChartOptions>;
+  public ta_real_stats_chart_option: Partial<any>;
+  public gm_real_stats_chart_option: Partial<any>;
 
 
   displayedColumns = ['key', 'trip_advisor', 'google_maps']
@@ -102,33 +122,70 @@ export class RestaurantInfoComponent implements OnInit {
         labels: {formatter: function(val) {return val.toFixed(2);}}
       }
     ]
+    this.ta_real_stats_chart_option = {
+      series: [],
+      chart: {
+        height: 350,
+        type: "radialBar"
+      },
+      plotOptions: {
+        radialBar: {
+          dataLabels: {
+            name: {
+              fontSize: "22px"
+            },
+            value: {
+              fontSize: "16px"
+            },
+            total: {
+              show: true,
+              label: "Media",
+              formatter: function(w:any) {
+                let mean = 0
+                for (let index = 0; index < w.config.labels.length; index++) {
+                  mean += w.config.labels[index]/100 * w.config.series[index]
+                }
+                return mean.toFixed(2);
+              }
+            }
+          }
+        }
+      },
+      labels: []
+    };
+    this.gm_real_stats_chart_option = {...this.ta_real_stats_chart_option};
   }
 
 
   ngOnInit(): void {
     // this.place_id = this._route.snapshot.paramMap.get('place_id');
     // this.restaurant_id = this._route.snapshot.paramMap.get('restaurant_id');
-    const headers = {'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
+    const headers = {'x-api-key': 'YixM9kMJrp5JIrOvNLgU38Vmsz8Qt3IF7xrxqndF'}
     const body = {"place_id":this.place_id, "restaurant_id":this.restaurant_id}
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/trip_advisor', body, { headers }).subscribe(data => {
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/data/trip_advisor', body, { headers }).subscribe(data => {
         this.trip_advisor_data = data
         this.restaurant_name = data.name
         this.trip_advisor_loaded = true
         this.fulfill_table()
         this.populate_graphs()
     })
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/google_maps', body, { headers }).subscribe(data => {
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/data/google_maps', body, { headers }).subscribe(data => {
         this.google_maps_data = data
         this.google_maps_loaded = true
         this.fulfill_table()
         this.populate_graphs()
     })
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/reviews/historical', body, { headers }).subscribe(data => {
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/reviews/historical', body, { headers }).subscribe(data => {
         this.reviews_historical = data
         this.reviews_historical_loaded = true
         this.populate_graphs()
     })
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/reviews/last', body, { headers }).subscribe(data => {
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/reviews/stats', body, { headers }).subscribe(data => {
+        this.reviews_stats = data
+        this.reviews_stats_loaded = true
+        this.populate_stats_graphs()
+    })
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/reviews/last', body, { headers }).subscribe(data => {
         this.last_reviews = data
         console.log(this.last_reviews)
     })
@@ -173,7 +230,7 @@ export class RestaurantInfoComponent implements OnInit {
     if (this.trip_advisor_loaded && this.reviews_historical_loaded && this.google_maps_loaded && this.reviews_historical_loaded){
       this.aux_max_reviews = Math.max(Math.max(...this.reviews_historical.trip_advisor.counts), Math.max(...this.reviews_historical.google_maps.counts))
       let historical_data = this.trip_advisor_data.historical
-      let count_data = historical_data.week.length
+      let count_data = historical_data.date.length
       this.ta_all_scores_chart_option.series = [
         {name: "Puntuación media", type: "line", data: Array(count_data-historical_data.score_overall.length).fill(null).concat(historical_data.score_overall)},
         {name: "Puntuación comida", type: "line", data: Array(count_data-historical_data.score_food.length).fill(null).concat(historical_data.score_food)},
@@ -182,45 +239,123 @@ export class RestaurantInfoComponent implements OnInit {
         {name: "Puntuación atmósfera", type: "line", data: Array(count_data-historical_data.score_atmosphere.length).fill(null).concat(historical_data.score_atmosphere)},
       ]
       this.ta_all_scores_chart_option.title = {text: "Tendencia puntuaciaciones trip advisor",align: "left"}
-      this.ta_all_scores_chart_option.xaxis = {categories: historical_data.week,title: {text: "Semana del año"},}
+      this.ta_all_scores_chart_option.xaxis = {categories: historical_data.date,title: {text: "Semana del año"},}
 
       this.ta_score_chart_option.series = [
-        {name: "Núm comentarios", type: "column", data: Array(count_data-this.reviews_historical.trip_advisor.counts.length).fill(null).concat(this.reviews_historical.trip_advisor.counts)},
-        {name: "Puntuación media", type: "line", data: Array(count_data-historical_data.score_overall.length).fill(null).concat(historical_data.score_overall)},
-        {name: "Puntuación semanal (comentarios)", type: "line", data: Array(count_data-this.reviews_historical.trip_advisor.means.length).fill(null).concat(this.reviews_historical.trip_advisor.means)}
+        {name: "Núm comentarios", type: "column", data: this.reviews_historical.trip_advisor.counts},
+        {name: "Puntuación diaria (comentarios)", type: "line", data: this.reviews_historical.trip_advisor.means},
+        {name: "Puntuación media", type: "line", data: historical_data.score_overall},
       ]
       this.ta_score_chart_option.yaxis = [
-        {opposite: true, title: {text: "Núm comentarios"}, min:0, max:this.aux_max_reviews, tickAmount:this.aux_max_reviews, labels: {formatter: function(val) {return val.toFixed(1);}}},
+        {opposite: true, title: {text: "Núm comentarios"}, min:0, labels: {formatter: function(val) {return val.toFixed(1);}}},
+        {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}, show:false},
         {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}}
       ]
       this.ta_score_chart_option.title = {text: "Tendencia puntuación trip advisor",align: "left"}
-      this.ta_score_chart_option.xaxis = {categories: historical_data.week,title: {text: "Semana del año"},}
+      this.ta_score_chart_option.xaxis = {title: {text: "Semana del año"},}
 
       this.ta_position_chart_option.series = [
         {name: "Posición", type: "line", data: Array(count_data-historical_data.ranking.length).fill(null).concat(historical_data.ranking)},
       ]
       this.ta_position_chart_option.title = {text: "Ranking en trip advisor", align: "left"}
-      this.ta_position_chart_option.xaxis = {categories: historical_data.week, title: {text: "Semana del año"},}
+      this.ta_position_chart_option.xaxis = {categories: historical_data.date, title: {text: "Semana del año"},}
 
       let historical_data_gm = this.google_maps_data.historical
-      let count_data_gm = historical_data_gm.week.length
       this.gm_score_chart_option.series = [
-        {name: "Núm comentarios", type: "column", data: Array(count_data_gm-this.reviews_historical.google_maps.counts.length).fill(null).concat(this.reviews_historical.google_maps.counts)},
-        {name: "Puntuación media", type: "line", data: Array(count_data_gm-historical_data_gm.score_overall.length).fill(null).concat(historical_data_gm.score_overall)},
-        {name: "Puntuación semanal (comentarios)", type: "line", data: Array(count_data_gm-this.reviews_historical.google_maps.means.length).fill(null).concat(this.reviews_historical.google_maps.means)}
+        {name: "Núm comentarios", type: "column", data: this.reviews_historical.google_maps.counts},
+        {name: "Puntuación diaria (comentarios)", type: "line", data: this.reviews_historical.google_maps.means},
+        {name: "Puntuación media", type: "line", data: historical_data_gm.score_overall},
       ]
+      this.gm_score_chart_option.xaxis = {type: 'datetime', title: {text: "Semana del año"},}
       this.gm_score_chart_option.yaxis = [
-        {opposite: true, title: {text: "Núm comentarios"}, min:0, max:this.aux_max_reviews, tickAmount:this.aux_max_reviews, labels: {formatter: function(val) {return val.toFixed(1);}}},
+        {opposite: true, title: {text: "Núm comentarios"}, min:0, labels: {formatter: function(val) {return val.toFixed(1);}}},
+        {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}, show:false},
         {title: {text: "Puntuación"}, min:0, max:5, tickAmount: 5, labels: {formatter: function(val) {return val.toFixed(2);}}}
       ]
       this.gm_score_chart_option.title = {text: "Tendencia puntuación google maps",align: "left"}
-      this.gm_score_chart_option.xaxis = {categories: historical_data_gm.week, title: {text: "Semana del año"},}
 
       this.aux_max_position = Math.max(...historical_data.ranking)
       this.setMax.emit()
     }
   }
 
+  populate_stats_graphs(): void {
+    if (this.reviews_stats_loaded){
+      const rates = JSON.parse(this.reviews_stats.rates)
+      const real_ta = rates["real"]["trip_advisor"] 
+      const real_ta_total = real_ta['5']+real_ta['4']+real_ta['3']+real_ta['2']+real_ta['1']
+      this.ta_real_stats_chart_option['series'] = [
+        (real_ta['5']*100/real_ta_total).toFixed(2),
+        (real_ta['4']*100/real_ta_total).toFixed(2),
+        (real_ta['3']*100/real_ta_total).toFixed(2),
+        (real_ta['2']*100/real_ta_total).toFixed(2),
+        (real_ta['1']*100/real_ta_total).toFixed(2)]
+      this.ta_real_stats_chart_option["labels"] = [5,4,3,2,1]
+
+      const real_gm = rates["real"]["google_maps"] 
+      const real_gm_total = real_gm['5']+real_gm['4']+real_gm['3']+real_gm['2']+real_gm['1']
+      this.gm_real_stats_chart_option['series'] = [
+        (real_gm['5']*100/real_gm_total).toFixed(2),
+        (real_gm['4']*100/real_gm_total).toFixed(2),
+        (real_gm['3']*100/real_gm_total).toFixed(2),
+        (real_gm['2']*100/real_gm_total).toFixed(2),
+        (real_gm['1']*100/real_gm_total).toFixed(2)]
+      this.gm_real_stats_chart_option["labels"] = [5,4,3,2,1]
+    }
+
+    const features = JSON.parse(this.reviews_stats.features)
+    let dataPositive: any[] = []
+    const featuresPositives = Object.keys(features["positive"]).sort((a, b) => features["positive"][b] - features["positive"][a]).slice(0, this.max_words)
+    for (const key of featuresPositives) {
+      dataPositive.push({"name":key, weight: features["positive"][key]})
+    }
+
+    const options:Highcharts.Options = {
+      accessibility: {
+          screenReaderSection: {
+              beforeChartFormat: '<h5>{chartTitle}</h5>' +
+                  '<div>{chartSubtitle}</div>' +
+                  '<div>{chartLongdesc}</div>' +
+                  '<div>{viewTableButton}</div>'
+          }
+      },
+      series: [{
+          type: 'wordcloud',
+          data: dataPositive,
+          name: 'Ocurencias'
+      }],
+      title: {
+          text: ''
+      }
+    };
+    Highcharts.chart('positiveWords', options);
+
+    let dataNegative: any[] = []
+    const featuresNegatives = Object.keys(features["negative"]).sort((a, b) => features["negative"][b] - features["negative"][a]).slice(0, this.max_words)
+    for (const key of featuresNegatives) {
+      dataNegative.push({"name":key, weight: features["negative"][key]})
+    }
+
+    const optionsNegative:Highcharts.Options = {
+      accessibility: {
+          screenReaderSection: {
+              beforeChartFormat: '<h5>{chartTitle}</h5>' +
+                  '<div>{chartSubtitle}</div>' +
+                  '<div>{chartLongdesc}</div>' +
+                  '<div>{viewTableButton}</div>'
+          }
+      },
+      series: [{
+          type: 'wordcloud',
+          data: dataNegative,
+          name: 'Ocurencias'
+      }],
+      title: {
+          text: ''
+      }
+    };
+    Highcharts.chart('negativeWords', optionsNegative);
+  }
 
   update_graphs(aux_max_reviews:any, aux_max_position:any){
     this.ta_score_chart_option.yaxis = [

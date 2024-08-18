@@ -24,33 +24,33 @@ export class NotificationService {
   }
 
   obtainConfigurationsData(){
-    const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
+    const headers = { 'x-api-key': 'YixM9kMJrp5JIrOvNLgU38Vmsz8Qt3IF7xrxqndF'}
     const body = {"username":this.user.username}
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/notifications/configurations', body, { headers }).subscribe(data => {
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/notifications/configurations', body, { headers }).subscribe(data => {
         this.configs = data
         this.configs_subject$.next(this.configs);
     })
   }
 
   createConfiguration(body:any){
-    const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/notifications/configurations/new', body, { headers }).subscribe(() => {
+    const headers = { 'x-api-key': 'YixM9kMJrp5JIrOvNLgU38Vmsz8Qt3IF7xrxqndF'}
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/notifications/configurations/new', body, { headers }).subscribe(() => {
         console.log("AQUI")
         this.obtainConfigurationsData()
     })
   }
 
   deleteConfig(body:any){
-    const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/notifications/configurations/delete', body, { headers }).subscribe(() => {
+    const headers = { 'x-api-key': 'YixM9kMJrp5JIrOvNLgU38Vmsz8Qt3IF7xrxqndF'}
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/notifications/configurations/delete', body, { headers }).subscribe(() => {
       this.obtainConfigurationsData()
     })
   }
 
   obtainNotificationsData(){
-    const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
+    const headers = { 'x-api-key': 'YixM9kMJrp5JIrOvNLgU38Vmsz8Qt3IF7xrxqndF'}
     const body = {"username":this.user.username}
-    this.http.post<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/notifications', body, { headers }).subscribe(data => {
+    this.http.post<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/notifications', body, { headers }).subscribe(data => {
         this.notifs = data
         this.notifs_subject$.next(this.notifs);
     })

@@ -62,7 +62,7 @@
   
 
  .example-viewport {
-  height: 200px;
+  height: 400px;
   width: 100%;
   /* border: 1px solid black; */
   border-radius: 10px;
@@ -71,4 +71,13 @@
 .example-card {
   margin: 2px;
   margin-bottom: 8px;
+}
+
+.ta-header-image {
+  background-image: url('../../../assets/images/tripadvisor.png');
+  background-size: cover;
+}
+.gm-header-image {
+  background-image: url('../../../assets/images/googlemaps.jpg');
+  background-size: cover;
 }

@@ -1,0 +1,6 @@
+.header {
+    background-color: var(--primary);
+    color: var(--terciary);
+    position: fixed;
+    z-index: 100;
+}

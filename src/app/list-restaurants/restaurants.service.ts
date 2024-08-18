@@ -37,8 +37,8 @@ export class RestaurantList {
     
 
     obtainRestaurantsData(){
-        const headers = { 'x-api-key': 'NtNisN8Li5138tvAe57wf2tBr5oCQ7hK1N7zHidy'}
-        this.http.get<any>('https://tst223j7a2.execute-api.us-east-1.amazonaws.com/dev/data/combined', { headers }).subscribe(data => {
+        const headers = { 'x-api-key': 'YixM9kMJrp5JIrOvNLgU38Vmsz8Qt3IF7xrxqndF'}
+        this.http.get<any>('https://w6bsw6k9ea.execute-api.us-east-1.amazonaws.com/dev/data/combined', { headers }).subscribe(data => {
             this.restaurants = this.moveToFirstPlace(data, this.rests)
             this.restaurants_subject$.next(this.restaurants);
         })

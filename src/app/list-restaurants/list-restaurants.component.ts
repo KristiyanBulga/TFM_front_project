@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { RestaurantList } from './restaurants.service';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { UsersService } from '../user/users.service';
+import * as L from 'leaflet';
 
 export interface PeriodicElement {
   name: string;
@@ -17,7 +18,7 @@ export interface PeriodicElement {
   templateUrl: './list-restaurants.component.html',
   styleUrls: ['./list-restaurants.component.css']
 })
-export class ListRestaurantsComponent implements OnInit {
+export class ListRestaurantsComponent implements OnInit, AfterViewInit  {
   user: any = {}
   user_logged: boolean = false
   displayedColumns: string[] = ['restaurant_name', 'score_overall', 'symbol', 'services', 'actions'];
@@ -25,6 +26,7 @@ export class ListRestaurantsComponent implements OnInit {
   dataToDisplay: any = []
   dataSource = new MatTableDataSource(this.dataToDisplay);
   restaurants: any = [];
+  filteredRestaurants: any[] = [];
   services: any = {
     "wheelchair accessible entrance": {icon: "accessible", tooltip: "Acceso silla de ruedas"},
     "deliver": {icon: "local_shipping", tooltip: "Envio a domicilio"},
@@ -44,7 +46,8 @@ export class ListRestaurantsComponent implements OnInit {
 
   selected_restaurants: any = []
 
-
+  private map!: L.Map
+  markers: L.Marker[] = []
 
   constructor(private restaurantService: RestaurantList, private _router: Router, private userService: UsersService) {
     this.userService.user_info$.subscribe(data => {
@@ -56,6 +59,21 @@ export class ListRestaurantsComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.restaurants);
         this.setSortingStrategy();
         this.dataSource.sort = this.sort; 
+        let list: any[] = []
+        try {
+          if (typeof(this.dataSource.filteredData) === 'object'){
+            list = [...this.dataSource.filteredData.values()]
+            this.filteredRestaurants = list
+            this.markers.forEach(marker => this.map.removeLayer(marker));
+            this.markers = []
+            for (const restaurant of list) {
+              const coords = JSON.parse((restaurant as any).location.replace("{", "{\"").replace("=", "\":").replace(", ", ", \"").replace("=", "\":"))
+              this.markers.push(L.marker([coords.lat, coords.lng]).bindPopup(this.makeRestaurantPopup(restaurant)))
+            };
+            this.addMarkers();
+            this.centerMap();
+          }
+        } catch (error) {}
     })
   }
 
@@ -66,13 +84,24 @@ export class ListRestaurantsComponent implements OnInit {
     else this.restaurantService.getRestaurantsData()
   }
 
+  ngAfterViewInit() {
+    this.initializeMap();
+  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
     this.dataSource.sort = this.sort; 
+    this.markers.forEach(marker => this.map.removeLayer(marker));
+    this.markers = []
+    this.filteredRestaurants = this.dataSource.filteredData.values() as any
+    for (const restaurant of this.dataSource.filteredData.values()) {
+      const coords = JSON.parse((restaurant as any).location.replace("{", "{\"").replace("=", "\":").replace(", ", ", \"").replace("=", "\":"))
+      this.markers.push(L.marker([coords.lat, coords.lng]).bindPopup(this.makeRestaurantPopup(restaurant)))
+    };
+    this.addMarkers();
+    this.centerMap();
   }
-
 
   setSortingStrategy(){
     this.dataSource.sortingDataAccessor = (item:any, property) => {
@@ -85,7 +114,6 @@ export class ListRestaurantsComponent implements OnInit {
       }
     };
   }
-
 
   select_restaurant(name:string, place_id:string, restaurant_id:string){
     if (this.selected_restaurants.length == 0){
@@ -108,4 +136,38 @@ export class ListRestaurantsComponent implements OnInit {
     return false
   }
 
+  get_property(restaurant:any, property: string){
+    return restaurant ? restaurant[property] : "Desconocido"
+  }
+
+  get_property_child(restaurant:any, property: string, child: string){
+    const parent = restaurant ? restaurant[property] : {};
+    return parent ? parent[child] : "Desconocido"
+  }
+
+  // MAP VIEW /////////////////////////////////
+  private initializeMap() {
+    const baseMapURl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    this.map = L.map('map');
+    L.tileLayer(baseMapURl).addTo(this.map);
+  }
+  
+  private addMarkers() {
+    // Add your markers to the map
+    this.markers.forEach(marker => marker.addTo(this.map));
+  }
+
+  private centerMap() {
+    // Create a LatLngBounds object to encompass all the marker locations
+    const bounds = L.latLngBounds(this.markers.map(marker => marker.getLatLng()));
+    
+    // Fit the map view to the bounds
+    this.map.fitBounds(bounds);
+  }
+
+  makeRestaurantPopup(data: any): string {
+    return `` +
+      `<b>${ data.restaurant_name }</b>` +
+      `<div>Puntuación media: ${ data.scores.average }</div>`
+  }
 }
